@@ -8,15 +8,15 @@ namespace SudokuV1
 {
     public class Sudoku
     {
-        private int[,] trueField;
-        private int[,] field;
-        private int[,] userfield;
-        private bool solved;
-        private int level;
-        private Random random;
-        private int hints = 99;
+        private int[,] trueField; // решенный судоку
+        private int[,] field; // изначальное поле
+        private int[,] userfield; //поле пользователя
+        private bool solved; //решено или нет
+        private int level; //уровень сложности
+        private Random random; //рандомайзер
+        private int hints = 99; //подсказки
 
-        public Sudoku(int level) { 
+        public Sudoku(int level) {  //конструктор
             this.random = new Random();
             this.level = (level + 1) * 10;
             SudokuGen();
@@ -30,26 +30,20 @@ namespace SudokuV1
         public int Level {  get { return this.level/10-1; } }
 
 
-        public bool AddDigit(int digit, int x, int y) {
-            if (this.userfield[x, y] <= 0)
+        public bool AddDigit(int digit, int x, int y) { //добавление цифры
+            if (this.userfield[x, y] == 0 || this.userfield[x, y] != this.trueField[x, y])
             {
-                if (this.trueField[x, y] == digit)
-                {
-                    this.userfield[x, y] = digit;
-                }
-                else
-                {
-                    this.userfield[x, y] = -1;
-                }
+                this.userfield[x, y] = digit;
+               
                 Check();
                 return true;
             }
             else
                 return false;
         }
-        public bool DelDigit(int x, int y)
+        public bool DelDigit(int x, int y) //удаление цифры
         {
-            if (this.userfield[x, y] == -1)
+            if (this.userfield[x, y] != this.trueField[x,y])
             {
                 this.userfield[x, y] = 0;
                 return true;
@@ -59,7 +53,7 @@ namespace SudokuV1
                 return false;
             }
         }
-        public bool isAll(int dig)
+        public bool isAll(int dig) //проверка на то, поставлены ли все цифры
         {
             int count = 0;
             for (int i = 0; i < 9; i++)
@@ -75,7 +69,7 @@ namespace SudokuV1
             else
                 return false;
         }
-        public int[]  UseHint()
+        public int[]  UseHint() //подсказка
         {
             if (this.hints == 0)
                 throw new Exception("Закончились подсказки");
@@ -83,7 +77,7 @@ namespace SudokuV1
             {
                 int x = random.Next(0, 9);
                 int y = random.Next(0, 9);
-                if (this.userfield[x, y] <= 0)
+                if (this.userfield[x, y] == 0 || this.userfield[x, y] != this.trueField[x, y])
                 {
                     this.userfield[x, y] = this.TrueField[x, y];
                     this.hints -= 1;
@@ -93,7 +87,7 @@ namespace SudokuV1
 
             }
         }
-            private void SudokuGen()
+        private void SudokuGen() //генерация судоку
         {
             this.trueField = new int[9, 9];
             for(int i =0; i < 3; i++)
@@ -108,7 +102,7 @@ namespace SudokuV1
             
         }
 
-        private bool fillRemaining(int[,] grid, int i, int j)
+        private bool fillRemaining(int[,] grid, int i, int j)//заполняет все остальное
         {
             if (i == 9)
             {
@@ -137,7 +131,7 @@ namespace SudokuV1
             return false;
         }
 
-        private int[,] GenArea(int[,] field, int ind)
+        private int[,] GenArea(int[,] field, int ind)//генерирует три квадрата по диагонали
         {
             
             for(int i =1; i<10; i++)
@@ -157,7 +151,7 @@ namespace SudokuV1
             return field;
         }
 
-        public bool IsFit(int[,] m, int x, int y, int dig)
+        public bool IsFit(int[,] m, int x, int y, int dig)//проверяет подходит ли цифра
         {
             
             for(int i = 0; i<9; i++)
@@ -187,7 +181,7 @@ namespace SudokuV1
             return true;
         }
 
-        private void RemoveKDigits(int k)
+        private void RemoveKDigits(int k)//убирает определенное количество цифр
         {
             
             while (k > 0)
@@ -203,14 +197,14 @@ namespace SudokuV1
             }
         }
 
-        private void Check()
+        private void Check()//проверка на победу
         {
             this.solved = true;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    if (this.userfield[i, j] <= 0)
+                    if (this.userfield[i, j] == 0 || this.userfield[i, j] != this.trueField[i, j])
                         this.solved = false;
                 }
             }

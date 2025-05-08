@@ -59,9 +59,9 @@ namespace SudokuV1
             Button[] args = {button1,button2, button3, button4, button5, button6, button7, button8,button9 };   
             dataGridView1.RowCount = 9;
             dataGridView1.ColumnCount = 9;
+            int c = Math.Min(dataGridView1.ClientSize.Height, dataGridView1.ClientSize.Width) / 9;
             for (int i = 0; i < 9; i++)
             {
-                int c = Math.Min(dataGridView1.ClientSize.Height, dataGridView1.ClientSize.Width) / 9;
                 dataGridView1.Rows[i].Height = c;
                 dataGridView1.Columns[i].Width = c;
                 dataGridView1.Height = c * 9;
@@ -82,7 +82,7 @@ namespace SudokuV1
         
 
 
-        private void button_Click(object sender, EventArgs e)
+        private void button_Click(object sender, EventArgs e) //кнопки для установки цифр
         {
             Button button = sender as Button;
             int row = dataGridView1.SelectedCells[0].RowIndex;
@@ -96,11 +96,9 @@ namespace SudokuV1
             }
             win();
 
-
-
         }
 
-        private void button_Del(object sender, EventArgs e)
+        private void button_Del(object sender, EventArgs e) //кнопка удаления
         {
             
             int row = dataGridView1.SelectedCells[0].RowIndex;
@@ -117,7 +115,7 @@ namespace SudokuV1
         }
 
 
-        private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)//отрисовка
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 return;
@@ -204,7 +202,7 @@ namespace SudokuV1
             }
             
 
-            if (s != null && s.UserField[e.RowIndex, e.ColumnIndex] == -1 )
+            if (s != null && s.UserField[e.RowIndex, e.ColumnIndex] != s.TrueField[e.RowIndex, e.ColumnIndex] && s.UserField[e.RowIndex, e.ColumnIndex]!=0)
             {
                 Rectangle rect = e.CellBounds;
                 rect.Inflate(-1, -1); // Немного уменьшаем, чтобы не перекрывать существующие границы
@@ -229,7 +227,7 @@ namespace SudokuV1
         }
 
 
-        private void start(int level)
+        private void start(int level) //создает поеле и отрисовывает его
         {
           
 
@@ -267,12 +265,12 @@ namespace SudokuV1
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)//запускает судоку при отерытии формы
         {
             start();
         }
 
-        public void start()
+        public void start() //старт судоку, открытие формы settings и старт таймера
         {
             sec = 0;
             min = 0;
@@ -287,7 +285,7 @@ namespace SudokuV1
             timer.Start();
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e) //работа таймера
         {
             // Обновление UI через Invoke
             try
@@ -309,7 +307,7 @@ namespace SudokuV1
             }
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e) //закрытие программы
         {
             timer.Stop();
  
@@ -320,7 +318,7 @@ namespace SudokuV1
             }
         }
 
-        private void button12_Click(object sender, EventArgs e)
+        private void button12_Click(object sender, EventArgs e) // кнопка подсказки
         {
             if (!s.Solved)
             {
@@ -332,7 +330,7 @@ namespace SudokuV1
             win();
         }
 
-        private void win()
+        private void win() // проверка на победу
         {
             if (s.Solved)
             {
@@ -340,10 +338,10 @@ namespace SudokuV1
                 ws.Location = new Point(this.Left + (this.Width - ws.Width) / 2, this.Top + (this.Height - ws.Height) / 2);
                 ws.ShowDialog();
                 Time time = new Time(sec,min);
-                if (time.Record(s.Level))
+                if (time.Record(s.Level)) // записываем время, если оно рекордное для этого уровня сложности
                 {
                     startForm.record.DeleteStr();
-                    foreach (Time tmp in Time.recordList)
+                    foreach (Time tmp in Time.recordList) // переписываем файл, если установлен новый рекорд
                     {
                         if (tmp == null)
                             startForm.record.WriteString("");
@@ -354,7 +352,7 @@ namespace SudokuV1
             }
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        private void button10_Click(object sender, EventArgs e) //кнопка паузы
         {
             timer.Stop();
             Pause pause = new Pause(this);
@@ -364,13 +362,13 @@ namespace SudokuV1
          
         }
 
-        public void toMenu()
+        public void toMenu() //возврат в главное меню
         {
             startForm.Show();
             this.Close();
         }
 
-        public Time getTime()
+        public Time getTime() //возвращает время
         {
             return new Time(sec,min);
         }
