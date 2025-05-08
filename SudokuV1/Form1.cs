@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Timers;
 using System.Threading;
+using System.Reflection.Emit;
 
 
 
@@ -27,6 +28,8 @@ namespace SudokuV1
         int sec = 0;
         int min = 0;
         System.Timers.Timer timer;
+        bool closing = false;
+    
         
 
 
@@ -34,9 +37,23 @@ namespace SudokuV1
         public Form1(StartForm start)
         {
          
-        InitializeComponent();
-       
-        typeof(DataGridView).InvokeMember(
+            InitializeComponent();
+            startForm = start;
+        }
+
+        public Form1(StartForm start, Sudoku s, int min, int sec)
+        {
+
+            InitializeComponent();
+            startForm = start;
+            this.s = s;
+            this.sec = sec;
+            this.min = min;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)//запускает судоку при отерытии формы
+        {
+            typeof(DataGridView).InvokeMember(
         "DoubleBuffered",
         System.Reflection.BindingFlags.NonPublic |
         System.Reflection.BindingFlags.Instance |
@@ -44,11 +61,11 @@ namespace SudokuV1
         null,
         dataGridView1,
         new object[] { true });
-            startForm = start;
+
             dataGridView1.Left = (this.ClientRectangle.Width - dataGridView1.Width) / 2;
             button1.Left = dataGridView1.Left;
             button2.Left = dataGridView1.Left + 62;
-            button3.Left = dataGridView1.Left + 62*2;
+            button3.Left = dataGridView1.Left + 62 * 2;
             button4.Left = dataGridView1.Left + 62 * 3;
             button5.Left = dataGridView1.Left + 62 * 4;
             button6.Left = button1.Left;
@@ -56,7 +73,7 @@ namespace SudokuV1
             button8.Left = button3.Left;
             button9.Left = button4.Left;
             button11.Left = button5.Left;
-            Button[] args = {button1,button2, button3, button4, button5, button6, button7, button8,button9 };   
+            Button[] args = { button1, button2, button3, button4, button5, button6, button7, button8, button9 };
             dataGridView1.RowCount = 9;
             dataGridView1.ColumnCount = 9;
             int c = Math.Min(dataGridView1.ClientSize.Height, dataGridView1.ClientSize.Width) / 9;
@@ -76,10 +93,9 @@ namespace SudokuV1
             dataGridView1.AdvancedCellBorderStyle.All = DataGridViewAdvancedCellBorderStyle.None;
 
             label2.Left = (this.ClientRectangle.Width - label2.Width) / 2;
-
+            start();
         }
 
-        
 
 
         private void button_Click(object sender, EventArgs e) //кнопки для установки цифр
@@ -227,11 +243,10 @@ namespace SudokuV1
         }
 
 
-        private void start(int level) //создает поеле и отрисовывает его
+        private void drawSudoku() //создает поеле и отрисовывает его
         {
           
-
-            s = new Sudoku(level);
+            
            
 
             for (int i = 0; i < 9; i++)
@@ -265,20 +280,27 @@ namespace SudokuV1
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)//запускает судоку при отерытии формы
-        {
-            start();
-        }
+        
 
         public void start() //старт судоку, открытие формы settings и старт таймера
         {
-            sec = 0;
-            min = 0;
-            label2.Text = "00:00";
-            Settings set = new Settings();
-            set.Location = new Point(this.Left + (this.Width - set.Width) / 2, this.Top + (this.Width - set.Width) / 2);
-            set.ShowDialog();
-            start(set.Level);
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
+            StartForm.last_game.DeleteStr();
+            if (s == null)
+            {
+                sec = 0;
+                min = 0;
+                label2.Text = "00:00";
+                Settings set = new Settings();
+                set.Location = new Point(this.Left + (this.Width - set.Width) / 2, this.Top + (this.Width - set.Width) / 2);
+                set.ShowDialog();
+                s = new Sudoku(set.Level);
+            }
+            drawSudoku();
 
             timer = new System.Timers.Timer(1000); // 1000 мс = 1 секунда
             timer.Elapsed += Timer_Elapsed;
@@ -310,8 +332,19 @@ namespace SudokuV1
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) //закрытие программы
         {
             timer.Stop();
- 
-            if (e.CloseReason == CloseReason.UserClosing)
+            StartForm.last_game.DeleteStr();
+            if (s != null)
+            {
+                StartForm.last_game.WriteString(s.Level + "");
+                StartForm.last_game.WriteString(s.Hints + "");
+                StartForm.last_game.WriteSudoku(s.TrueField);
+                StartForm.last_game.WriteSudoku(s.Field);
+                StartForm.last_game.WriteSudoku(s.UserField);
+                StartForm.last_game.WriteString((min * 60 + sec) + "");
+            }
+
+
+            if (!closing)
             {
                 // Это ручное закрытие пользователем (крестик, Alt+F4 и т.п.)
                 Application.Exit();
@@ -334,21 +367,26 @@ namespace SudokuV1
         {
             if (s.Solved)
             {
+                
+                timer.Stop();
+                StartForm.last_game.DeleteStr();
                 WinScreen ws = new WinScreen(this);
                 ws.Location = new Point(this.Left + (this.Width - ws.Width) / 2, this.Top + (this.Height - ws.Height) / 2);
-                ws.ShowDialog();
-                Time time = new Time(sec,min);
+                Time time = new Time(sec, min);
                 if (time.Record(s.Level)) // записываем время, если оно рекордное для этого уровня сложности
                 {
-                    startForm.record.DeleteStr();
+                    StartForm.record.DeleteStr();
                     foreach (Time tmp in Time.recordList) // переписываем файл, если установлен новый рекорд
                     {
                         if (tmp == null)
-                            startForm.record.WriteString("");
+                            StartForm.record.WriteString("");
                         else
-                            startForm.record.WriteString(tmp.ToSec()+"");
+                            StartForm.record.WriteString(tmp.ToSec() + "");
                     }
                 }
+                s = null;
+                ws.ShowDialog();
+                
             }
         }
 
@@ -365,7 +403,9 @@ namespace SudokuV1
         public void toMenu() //возврат в главное меню
         {
             startForm.Show();
+            closing = true;
             this.Close();
+            startForm.toStartScreen();
         }
 
         public Time getTime() //возвращает время
@@ -373,6 +413,6 @@ namespace SudokuV1
             return new Time(sec,min);
         }
 
-        
+    
     }
 }

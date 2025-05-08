@@ -23,18 +23,19 @@ namespace SudokuV1
             
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e) //продолжить игру
         {
             this.Close();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)//начать сначала
         {
             this.Close();
             form1.start();
+
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)//выход в главное меню
         {
             this.Close();
             form1.toMenu();

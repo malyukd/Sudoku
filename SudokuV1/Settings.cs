@@ -21,14 +21,14 @@ namespace SudokuV1
             
         }
 
-        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        private void trackBar1_ValueChanged(object sender, EventArgs e)//установка уровня
         {
             level = trackBar1.Value;
         }
 
         public int Level{get{return level; } }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)//закрыть
         {
             this.Close();
         }

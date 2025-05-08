@@ -22,6 +22,16 @@ namespace SudokuV1
             SudokuGen();
         }
 
+        public Sudoku(int[,] truefield, int[,]f, int[,]uf, int level, int hints)
+        {  //конструктор
+            this.trueField = truefield;
+            this.field = f;
+            this.userfield = uf;
+            this.random = new Random();
+            this.level = (level + 1) * 10;
+            this.hints = hints;
+        }
+
         public int[,] TrueField {  get { return this.trueField; } }
         public int[,] Field { get { return this.field; } }
         public int[,] UserField { get {return this.userfield; } }
