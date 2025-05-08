@@ -9,8 +9,8 @@ namespace SudokuV1
 {
     public class Data
     {
-        public string folder= "C:/Users/daram/OneDrive/Документы/SudokuApp";
-        public string file;
+        public string folder= "C:/Users/daram/OneDrive/Документы/SudokuApp"; //папка для сохранения
+        public string file; //путь к созданному файлу
 
         public Data(string name)
         {
@@ -22,12 +22,12 @@ namespace SudokuV1
             }
         }
 
-        public string Read()
+        public string Read() //читаем из файла
         {
             string text = File.ReadAllText(file);
             return text;
         }
-        public void WriteSudoku(int[,] field)
+        public void WriteSudoku(int[,] field) //записывает судоку в файл
         {
             for(int i = 0; i < 9; i++)
             {
@@ -36,12 +36,12 @@ namespace SudokuV1
                 File.AppendAllText(file, "\n");
             }
         }
-        public void WriteString(string str)
+        public void WriteString(string str)//записывает строку в файл
         {
                 File.AppendAllText(file, str+"\n");
             
         }
-        public void DeleteStr()
+        public void DeleteStr()//удаляет все из файла
         {
             File.WriteAllText(file, "");
         }
