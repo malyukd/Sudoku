@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SudokuV1
 {
@@ -14,7 +10,7 @@ namespace SudokuV1
         private bool solved; //решено или нет
         private int level; //уровень сложности
         private Random random; //рандомайзер
-        private int hints = 99; //подсказки
+        private int hints = 3; //подсказки
 
         public Sudoku(int level) {  //конструктор
             this.random = new Random();
@@ -81,7 +77,7 @@ namespace SudokuV1
         }
         public int[]  UseHint() //подсказка
         {
-            if (this.hints == 0)
+            if (this.hints <= 0)
                 throw new Exception("Закончились подсказки");
             while (true)
             {

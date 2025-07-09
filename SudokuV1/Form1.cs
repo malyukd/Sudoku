@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Common;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using System.Timers;
-using System.Threading;
-using System.Reflection.Emit;
+
 
 
 
@@ -23,7 +14,7 @@ namespace SudokuV1
     public partial class Form1 : Form
     {
        
-        private Sudoku s = null;
+        public Sudoku s = null;
         private StartForm startForm = null;
         int sec = 0;
         int min = 0;
@@ -38,6 +29,8 @@ namespace SudokuV1
         {
          
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             startForm = start;
         }
 
@@ -89,7 +82,6 @@ namespace SudokuV1
             dataGridView1.DefaultCellStyle.SelectionForeColor = Color.Blue;
             Font currentFont = dataGridView1.Font;
             newFont = new Font(currentFont.FontFamily, 12, FontStyle.Regular);
-            // Убираем стандартную отрисовку границ при выделении
             dataGridView1.AdvancedCellBorderStyle.All = DataGridViewAdvancedCellBorderStyle.None;
 
             label2.Left = (this.ClientRectangle.Width - label2.Width) / 2;
@@ -346,7 +338,6 @@ namespace SudokuV1
 
             if (!closing)
             {
-                // Это ручное закрытие пользователем (крестик, Alt+F4 и т.п.)
                 Application.Exit();
             }
         }
@@ -355,10 +346,18 @@ namespace SudokuV1
         {
             if (!s.Solved)
             {
-                int[] pos = s.UseHint();
+                try
+                {
+                    int[] pos = s.UseHint();
+                
                 dataGridView1.Rows[pos[0]].Cells[pos[1]].Value = s.UserField[pos[0], pos[1]];
                 dataGridView1.Rows[pos[0]].Cells[pos[1]].Style.Font = newFont;
                 label1.Text = "" + s.Hints;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
             win();
         }
@@ -367,14 +366,11 @@ namespace SudokuV1
         {
             if (s.Solved)
             {
-                
-                timer.Stop();
-                StartForm.last_game.DeleteStr();
-                WinScreen ws = new WinScreen(this);
-                ws.Location = new Point(this.Left + (this.Width - ws.Width) / 2, this.Top + (this.Height - ws.Height) / 2);
+                bool record = false;
                 Time time = new Time(sec, min);
                 if (time.Record(s.Level)) // записываем время, если оно рекордное для этого уровня сложности
                 {
+                    record = true;
                     StartForm.record.DeleteStr();
                     foreach (Time tmp in Time.recordList) // переписываем файл, если установлен новый рекорд
                     {
@@ -384,6 +380,10 @@ namespace SudokuV1
                             StartForm.record.WriteString(tmp.ToSec() + "");
                     }
                 }
+                timer.Stop();
+                StartForm.last_game.DeleteStr();
+                WinScreen ws = new WinScreen(this, record);
+                ws.Location = new Point(this.Left + (this.Width - ws.Width) / 2, this.Top + (this.Height - ws.Height) / 2);
                 s = null;
                 ws.ShowDialog();
                 

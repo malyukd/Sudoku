@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SudokuV1
 {
     public class Data
     {
-        public string folder= "C:/Users/daram/OneDrive/Документы/SudokuApp"; //папка для сохранения
+        public string folder= ""; //папка для сохранения
         public string file; //путь к созданному файлу
 
         public Data(string name)

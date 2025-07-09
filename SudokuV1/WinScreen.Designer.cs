@@ -32,6 +32,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -43,7 +44,6 @@
             this.label1.Size = new System.Drawing.Size(207, 51);
             this.label1.TabIndex = 0;
             this.label1.Text = "YOU WIN";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // button3
             // 
@@ -77,12 +77,24 @@
             this.label2.TabIndex = 5;
             this.label2.Text = "00:00";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Comic Sans MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label3.ForeColor = System.Drawing.Color.Red;
+            this.label3.Location = new System.Drawing.Point(91, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(111, 15);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "~~NEW RECORD~~";
+            // 
             // WinScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(304, 381);
             this.ControlBox = false;
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -101,5 +113,6 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }

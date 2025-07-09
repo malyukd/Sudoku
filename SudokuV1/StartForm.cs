@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SudokuV1
@@ -22,8 +14,13 @@ namespace SudokuV1
         public StartForm()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             label1.Left = (this.ClientRectangle.Width - label1.Width) / 2;
             button1.Left = (this.ClientRectangle.Width - button1.Width) / 2;
+            button2.Left = (this.ClientRectangle.Width - button1.Width) / 2;
+            button3.Left = (this.ClientRectangle.Width - button1.Width) / 2;
+            button4.Left = (this.ClientRectangle.Width - button1.Width) / 2;
             readRecords();
             toStartScreen();
 
@@ -114,13 +111,9 @@ namespace SudokuV1
         }
 
 
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void StartForm_FormClosing(object sender, FormClosingEventArgs e)//закрытие формы
         {
+
             Application.Exit();
         }
 
@@ -134,5 +127,22 @@ namespace SudokuV1
             sec = 0;
             this.Hide();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            RecordsList form = new RecordsList(this);
+            form.Location = this.Location;
+            form.Show();
+            this.Hide();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            HowToPLay form = new HowToPLay(this);
+            form.Location = this.Location;
+            form.Show(); this.Hide();   
+        }
+
+
     }
 }

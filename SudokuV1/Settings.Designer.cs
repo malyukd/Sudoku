@@ -137,7 +137,7 @@
             this.Name = "Settings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Settings";
-            this.Load += new System.EventHandler(this.Settings_Load);
+
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

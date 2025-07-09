@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SudokuV1
@@ -16,6 +9,8 @@ namespace SudokuV1
         public Pause(Form1 form)
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             form1 = form;
             button1.Left = (this.ClientRectangle.Width - button1.Width) / 2;
             button2.Left = (this.ClientRectangle.Width - button2.Width) / 2;
@@ -31,6 +26,7 @@ namespace SudokuV1
         private void button2_Click(object sender, EventArgs e)//начать сначала
         {
             this.Close();
+            form1.s = null;
             form1.start();
 
         }
